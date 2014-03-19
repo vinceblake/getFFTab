@@ -11,33 +11,35 @@ Requires the Acc Library:
 http://www.autohotkey.com/board/topic/77303-acc-library-ahk-l-updated-09272012/
 */
 
+
 GetFFTab(TabName=""){
-for each, child in Acc_Children(Acc_Get("Object", "4", 0, "ahk_class MozillaWindowClass")) ; 4 is the "application" path. It is a constant.
+for each, child in Acc_Children(Acc_Get("Object", "4", 0, "ahk_class MozillaWindowClass"))
 {
-	c1 := a_index ; We will use the c variables to map the path to the object we want to retrieve.
-	try role := Acc_GetRoleText(child.accRole(0)) ; 0 is a constant. 
-	If InStr(role, "tool bar") ; Obtained this information from Jethrow's Acc Viewer program.
+	c1 := a_index
+	try role := Acc_GetRoleText(child.accRole(0))
+	If InStr(role, "tool bar")
 		for each, child in Acc_Children(child)
 		{
-			c2 := a_index ; Getting closer...
+			c2 := a_index
 			try role := Acc_GetRoleText(child.accRole(0))
 			if inStr(role, "page tab list")
 				for each, child in Acc_Children(child)
 				{
 					try name := child.AccName(0)
 					if InStr(name, TabName)
-					{
-						c3 := a_index ; This is the final piece of the path to the desired tab.
-						break ; Stop looking in the inner loop.
+						c3 := a_index
+						
+					if c3
+						break
 				}
 			if c3
-				break ; Stop looking in the middle loop.
+				break
 		}
 	if c3
-		break ; Stop looking in the outer loop.
+		break
 }
 
-path := "4." c1 "." c2 "." c3 ; Here's our full path to the tab
-return Acc_Get("Object", path, 0, Title) ; Return the object located at our path.
+path := "4." c1 "." c2 "." c3
+return Acc_Get("Object", path, 0, Title)
 
 }
